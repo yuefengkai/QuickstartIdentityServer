@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{66F04634-ABB7-4037-B952-E4A0FC4C8E25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceOwnerPassword", "ResourceOwnerPassword\ResourceOwnerPassword.csproj", "{E16F019D-93A3-4BC7-9E9C-9748246323FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourceOwnerPassword", "ResourceOwnerPassword\ResourceOwnerPassword.csproj", "{E16F019D-93A3-4BC7-9E9C-9748246323FA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{77732BC9-879A-48C0-A71E-B6018BEC08A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{66F04634-ABB7-4037-B952-E4A0FC4C8E25} = {77732BC9-879A-48C0-A71E-B6018BEC08A9}
+		{E16F019D-93A3-4BC7-9E9C-9748246323FA} = {77732BC9-879A-48C0-A71E-B6018BEC08A9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E364ABA-568D-480B-9FC2-65FF745AA03D}
