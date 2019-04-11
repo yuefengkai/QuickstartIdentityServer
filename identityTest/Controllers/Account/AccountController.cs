@@ -79,7 +79,7 @@ namespace QuickstartIdentityServer.Controllers
         {
             // check if we are in the context of an authorization request
             var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-
+            var vm = await BuildLoginViewModelAsync(model);
             // the user clicked the "cancel" button
             if (button != "login")
             {
@@ -164,7 +164,7 @@ namespace QuickstartIdentityServer.Controllers
             }
 
             // something went wrong, show form with error
-            var vm = await BuildLoginViewModelAsync(model);
+            //var vm = await BuildLoginViewModelAsync(model);
             return View(vm);
         }
 
