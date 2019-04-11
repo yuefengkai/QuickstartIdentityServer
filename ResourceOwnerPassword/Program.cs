@@ -43,6 +43,7 @@ namespace ResourceOwnerPassword
                         Scope = "myApi",
                     });
 
+                    Console.WriteLine($"UserName=aa, Password=123");
 
                     if (tokenResource.IsError)
                     {
