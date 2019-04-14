@@ -52,26 +52,74 @@ namespace QuickstartIdentityServer
                     },
                     AllowedScopes = {"myApi"}
                 },
-                new Client()
+//                new Client()
+//                {
+//                    ClientId = "mvc",
+//                    ClientName = "mvc client",
+//                    AllowedGrantTypes = GrantTypes.Implicit,//隐式许可
+//
+//                    //登录后重定向到何处
+//                    RedirectUris = {"http://localhost:5002/signin-oidc"},
+//
+//                    //注销后重定向到何处
+//                    PostLogoutRedirectUris = {"http://localhost:5002/signout-callback-oidc"},
+//
+//                    RequireConsent = false, //关闭同意授权页面 登录成功后直接跳转至来源页面
+//
+//                    AllowedScopes = new List<string>()
+//                    {
+//                        IdentityServerConstants.StandardScopes.OpenId,
+//                        IdentityServerConstants.StandardScopes.Profile,
+//                        "myApi"
+//                    }
+//                },
+                new Client
                 {
                     ClientId = "mvc",
-                    ClientName = "mvc client",
-                    AllowedGrantTypes = GrantTypes.Implicit,
+                    ClientName = "MVC Client",
+                    AllowedGrantTypes = GrantTypes.HybridAndClientCredentials, //Hybrid 混合模式
 
-                    //登录后重定向到何处
-                    RedirectUris = {"http://localhost:5002/signin-oidc"},
-
-                    //注销后重定向到何处
-                    PostLogoutRedirectUris = {"http://localhost:5002/signout-callback-oidc"},
-
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    
                     RequireConsent = false, //关闭同意授权页面 登录成功后直接跳转至来源页面
+                    
+                    RedirectUris           = { "http://localhost:5002/signin-oidc","http://localhost:5001/signin-oidc" },
+                    PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" , "http://localhost:5001/signout-callback-oidc"},
 
-                    AllowedScopes = new List<string>()
+                    AllowedScopes =
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "myApi"
+                    },
+                    AllowOfflineAccess = true
+                },
+                // JavaScript Client
+                new Client
+                {
+                    ClientId = "js",
+                    ClientName = "JavaScript Client",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+                    RequireClientSecret = false, 
+                    RequireConsent = false, //关闭同意授权页面 登录成功后直接跳转至来源页面
+
+                    RedirectUris =           { "http://localhost:5003/callback.html" },
+                    PostLogoutRedirectUris = { "http://localhost:5003/index.html" },
+                    AllowedCorsOrigins =     { "http://localhost:5003" },
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "myApi"
                     }
                 }
+
+                
             };
         }
 
@@ -81,18 +129,19 @@ namespace QuickstartIdentityServer
             {
                 new TestUser
                 {
-                    SubjectId = "1", 
+                    SubjectId = "111111", 
                     Username = "gzz", 
                     Password = "123",
                     Claims = new List<Claim>()
                     {
                         new Claim("name", "gzz"),
+                        new Claim("ddwcc", "ddwcc"),
                         new Claim("website", "http://gzz.cn")
                     }
                 },
                 new TestUser
                 {
-                    SubjectId = "2",
+                    SubjectId = "222222",
                     Username = "bb",
                     Password = "123",
                     Claims = new List<Claim>()

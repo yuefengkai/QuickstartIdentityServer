@@ -13,9 +13,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QuickstartIdentityServer.Controllers;
 
-namespace QuickstartIdentityServer.Controllers
+namespace QuickstartIdentityServer.Controllers.Account
 {
     [SecurityHeaders]
     [AllowAnonymous]

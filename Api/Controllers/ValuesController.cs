@@ -2,20 +2,35 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        /// <summary>
+        /// 获取token
+        /// </summary>
+        /// <returns></returns>
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public async Task<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+
+            var list = HttpContext.User.Claims.Select(a => $"{a.Type}:{a.Value.ToString()}").ToList();
+            list.Add("---------------------------");
+//            list.AddRange((await HttpContext.AuthenticateAsync())?.Properties.Items.Select(a => $"{a.Key}:{a.Value}")
+//                .ToList());
+            
+            list.Add(accessToken);
+            
+            return list.ToArray();
         }
 
         // GET api/values/5

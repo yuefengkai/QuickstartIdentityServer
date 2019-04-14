@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QuickstartIdentityServer.Controllers
+namespace QuickstartIdentityServer.Controllers.Account
 {
     public class LoginViewModel : LoginInputModel
     {

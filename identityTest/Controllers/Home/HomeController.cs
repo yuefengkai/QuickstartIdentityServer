@@ -2,15 +2,14 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System.Threading.Tasks;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using QuickstartIdentityServer.Controllers;
-using System.Threading.Tasks;
 
-namespace QuickstartIdentityServer.Controllers
+namespace QuickstartIdentityServer.Controllers.Home
 {
     [SecurityHeaders]
     [AllowAnonymous]

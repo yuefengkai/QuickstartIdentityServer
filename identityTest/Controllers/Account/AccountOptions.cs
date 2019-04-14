@@ -4,7 +4,7 @@
 
 using System;
 
-namespace QuickstartIdentityServer.Controllers
+namespace QuickstartIdentityServer.Controllers.Account
 {
     public class AccountOptions
     {

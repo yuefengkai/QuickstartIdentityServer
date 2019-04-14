@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using QuickstartIdentityServer.Controllers;
 
-namespace QuickstartIdentityServer.Controllers
+namespace QuickstartIdentityServer.Controllers.Diagnostics
 {
     [SecurityHeaders]
     [Authorize]

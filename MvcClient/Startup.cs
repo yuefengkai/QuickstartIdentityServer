@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -42,15 +43,33 @@ namespace MvcClient
                     option.DefaultScheme = "Cookies";
                     option.DefaultChallengeScheme = "oidc"; // oidc = OpenIdConnect
                 }).AddCookie("Cookies")
-                .AddOpenIdConnect("oidc", option =>
+//                .AddOpenIdConnect("oidc", option =>
+//                {
+//                    option.Authority = "http://localhost:5000";//信任的 IdentityServer 地址
+//                    option.RequireHttpsMetadata = false;
+//
+//                    option.SignedOutRedirectUri = "http://localhost:5002/Home/Privacy";
+//
+//                    option.ClientId = "mvc"; //客户端
+//                    option.SaveTokens = true; //在 cookie 中保留来自IdentityServer 的令牌
+//                });
+                .AddOpenIdConnect("oidc", options => //混合模式
                 {
-                    option.Authority = "http://localhost:5000";//信任的 IdentityServer 地址
-                    option.RequireHttpsMetadata = false;
+                    options.SignInScheme = "Cookies";
 
-                    option.SignedOutRedirectUri = "http://localhost:5002/Home/Privacy";
+                    options.Authority = "http://localhost:5000";
+                    options.RequireHttpsMetadata = false;
 
-                    option.ClientId = "mvc"; //客户端
-                    option.SaveTokens = true; //在 cookie 中保留来自IdentityServer 的令牌
+                    options.ClientId = "mvc";
+                    options.ClientSecret = "secret";
+                    options.ResponseType = "code id_token"; //"code id_token"; //混合模式
+
+                    options.SaveTokens = true;
+                    options.GetClaimsFromUserInfoEndpoint = true;
+
+                    options.Scope.Add("myApi");
+                    options.Scope.Add("offline_access");
+                    options.ClaimActions.MapJsonKey("website", "website");
                 });
         }
 

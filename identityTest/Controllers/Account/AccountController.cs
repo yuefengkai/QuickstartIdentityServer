@@ -2,6 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
@@ -13,12 +16,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QuickstartIdentityServer.Controllers;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using QuickstartIdentityServer.Data;
+using  MySql.Data.MySqlClient;
+using QuickstartIdentityServer.Data.Dtos;
 
-namespace QuickstartIdentityServer.Controllers
+namespace QuickstartIdentityServer.Controllers.Account
 {
     /// <summary>
     /// This sample controller implements a typical login/logout/provision workflow for local and external accounts.
@@ -34,12 +38,18 @@ namespace QuickstartIdentityServer.Controllers
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
+        
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepository<User> _userRepository;
+        private ILogger<AccountController> _logger;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
+            IUnitOfWork unitOfWork, 
+            ILogger<AccountController> logger,
             TestUserStore users = null)
         {
             // if the TestUserStore is not in DI, then we'll just use the global users collection
@@ -50,6 +60,10 @@ namespace QuickstartIdentityServer.Controllers
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
             _events = events;
+            
+            _unitOfWork = unitOfWork;
+            _logger = logger;
+            _userRepository = _unitOfWork.GetRepository<User>(hasCustomRepository: true);
         }
 
         /// <summary>
@@ -109,11 +123,35 @@ namespace QuickstartIdentityServer.Controllers
 
             if (ModelState.IsValid)
             {
+                var user1 = _userRepository.FromSql("select * from t_wxqr_longin where wechatid=@wechatid",
+                    new MySqlParameter("wechatid", model.Username) );//.FirstOrDefaultAsync();//.FindAsync(new {Name = model.Username});
+
+                //var user1 = _userRepository.FromSql("select wuuid,wechatid,login,nickname,password from t_wxqr_longin");
+                UserDto userDto = null;
+                if (user1!=null)
+                {
+                    var s = user1.ToList(); //. wechatid;
+                    var user2 = await _userRepository.GetFirstOrDefaultAsync(predicate:u=>u.wechatid==model.Username);
+                    
+                    
+                    if (user2.password==model.Password)
+                    {
+                         userDto = AutoMapper.Mapper.Map<UserDto>(user2);
+                    }
+                }
+                
                 // validate username/password against in-memory store
-                if (_users.ValidateCredentials(model.Username, model.Password))
+                if (true || _users.ValidateCredentials(model.Username, model.Password))
                 {
                     var user = _users.FindByUsername(model.Username);
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.Username, user.SubjectId, user.Username));
+
+                    if (userDto == null && user != null)
+                    {
+                        userDto = AutoMapper.Mapper.Map<UserDto>(user);
+                    }
+
+
+                    await _events.RaiseAsync(new UserLoginSuccessEvent(userDto.UserName, userDto.Id , userDto.UserName));
 
                     // only set explicit expiration here if user chooses "remember me". 
                     // otherwise we rely upon expiration configured in cookie middleware.
@@ -128,7 +166,7 @@ namespace QuickstartIdentityServer.Controllers
                     };
 
                     // issue authentication cookie with subject ID and username
-                    await HttpContext.SignInAsync(user.SubjectId, user.Username, props);
+                    await HttpContext.SignInAsync(userDto.Id, userDto.UserName, props);
 
                     if (context != null)
                     {

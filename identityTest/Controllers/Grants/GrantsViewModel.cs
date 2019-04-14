@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace QuickstartIdentityServer.Controllers
+namespace QuickstartIdentityServer.Controllers.Grants
 {
     public class GrantsViewModel
     {

@@ -3,7 +3,7 @@
 
 
 
-namespace QuickstartIdentityServer.Controllers
+namespace QuickstartIdentityServer.Controllers.Account
 {
     public class RedirectViewModel
     {
